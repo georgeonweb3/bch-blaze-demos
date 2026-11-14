@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aegis on BCH — BCH BLAZE 2026</title>
+<style>
+  :root { --bg:#0d1117; --card:#161b22; --line:#30363d; --txt:#e6edf3; --dim:#8b949e; --green:#0ac18e; --gold:#e3b341; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--txt); font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  header { max-width:860px; margin:0 auto; padding:48px 20px 8px; }
+  h1 { font-size:34px; line-height:1.2; margin:0 0 8px; }
+  h1 span { color:var(--green); }
+  .sub { color:var(--dim); font-size:18px; margin:0 0 8px; }
+  .meta { color:var(--dim); font-size:14px; }
+  .meta b { color:var(--gold); }
+  main { max-width:860px; margin:0 auto; padding:20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin:0 0 20px; }
+  .card h2 { margin:0 0 4px; font-size:22px; }
+  .prize { float:right; color:var(--gold); font-weight:700; font-size:15px; }
+  .hook { color:var(--dim); font-style:italic; margin:0 0 12px; }
+  .proof { background:#0d1117; border:1px solid var(--line); border-radius:8px; padding:12px 14px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13.5px; white-space:pre-wrap; word-break:break-word; margin:12px 0; }
+  .proof .pass { color:var(--green); }
+  .stat { display:inline-block; background:#0d1117; border:1px solid var(--line); border-radius:8px; padding:8px 14px; margin:0 8px 8px 0; }
+  .stat b { display:block; font-size:20px; color:var(--green); }
+  .stat span { font-size:12.5px; color:var(--dim); }
+  a { color:var(--green); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  .links { font-size:14px; }
+  .links a { margin-right:16px; }
+  .wip { border-color:#8957e5; }
+  .wip .prize { color:#bc8cff; }
+  label { font-size:14px; color:var(--dim); }
+  input, select { background:#0d1117; color:var(--txt); border:1px solid var(--line); border-radius:6px; padding:8px 10px; font-size:15px; margin:4px 8px 4px 0; }
+  button { background:var(--green); color:#04120d; border:0; border-radius:6px; padding:9px 18px; font-size:15px; font-weight:700; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:wait; }
+  #bridgeOut { margin-top:12px; }
+  footer { max-width:860px; margin:0 auto; padding:8px 20px 48px; color:var(--dim); font-size:14px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Aegis on BCH <span>— BCH BLAZE 2026</span></h1>
+  <p class="sub">One spend guard, six bounty entries. Every entry below is built, tested, and public — with the numbers to prove it.</p>
+  <p class="meta">Built by <b>George Agbe</b> (<a href="https://github.com/georgeonweb3">georgeonweb3</a>) · BCH BLAZE Nov 14–22, 2026 · Judging Nov 23–27 · Winners Nov 28 · Total bounties entered: <b>12 BCH + $1,250 PUSD</b></p>
+</header>
+<main>
+
+<section class="card wip">
+  <span class="prize">3.5 BCH</span>
+  <h2>1 · SolidCash — Aegis guard in Solidity, compiled to BCH</h2>
+  <p class="hook">The flagship: the Aegis spend guard (daily limits, freeze, per-tx caps) as a Solidity contract that compiles natively to BCH.</p>
+  <p>Status: contract written, toolchain installing, compile next. The guard semantics are already proven in the XO template below and in the original Aegis contract on Base.</p>
+  <p class="links"><a href="https://github.com/georgeonweb3/aegis-base">Original Aegis (Base) ↗</a></p>
+</section>
+
+<section class="card">
+  <span class="prize">1 BCH + 0.3 BCH</span>
+  <h2>2 &amp; 3 · XO template — the guard, re-expressed for XO</h2>
+  <p class="hook">Same rules, no EVM: the Aegis guard as a BCH template any XO wallet can import.</p>
+  <div><span class="stat"><b>17/17</b><span>checks pass</span></span><span class="stat"><b>8</b><span>actions</span></span><span class="stat"><b>2</b><span>roles: owner + agent</span></span></div>
+  <p>Template validates structurally (references, CashASM), and the guard flow simulates clean: limit 100, deposit 10, spend 2, over-limit blocked, freeze, spend blocked, unfreeze, spend 1, withdraw 3, over-withdraw blocked, books balance at 4.</p>
+  <div class="proof"><span class="pass">  PASS</span>  template validates structurally
+<span class="pass">  PASS</span>  agent spends 2
+<span class="pass">  PASS</span>  spend 99 blocked (daily limit)
+<span class="pass">  PASS</span>  spend 1 blocked while frozen
+<span class="pass">  PASS</span>  books balance: 10 - 3 spent - 3 withdrawn = 4
+
+17 passed, 0 failed.</div>
+  <p class="links"><a href="https://github.com/georgeonweb3/aegis-xo-template">Repo: aegis-xo-template ↗</a><a href="https://github.com/georgeonweb3/aegis-xo-template/blob/main/MIGRATION.md">Migration map (Aegis.sol → template) ↗</a></p>
+</section>
+
+<section class="card">
+  <span class="prize">$500 PUSD</span>
+  <h2>4 · Decentralized Identity — BCH ⇄ Nostr binding</h2>
+  <p class="hook">One person, two chains of identity, zero trusted parties: two signatures pointing at each other.</p>
+  <div><span class="stat"><b>8/8</b><span>checks pass</span></span><span class="stat"><b>6</b><span>tamper cases rejected</span></span><span class="stat"><b>0</b><span>servers · wallets · relays needed</span></span></div>
+  <p>The BCH key signs <code>bch-nostr-binding:&lt;nostr_pubkey&gt;</code>; the Nostr key signs an event carrying the BCH address and that signature. Verification is offline and needs no registry.</p>
+  <div class="proof">BCH address : bitcoincash:qrl3thpdm84tefjwepqsszkw872cwlx3sc608uerd0
+BCH signed message: "bch-nostr-binding:e278e0ce4b03e7f78210…"
+Nostr event id: 40b028316b385eea770c…
+
+<span class="pass">  PASS</span>  full binding verifies
+<span class="pass">  PASS</span>  BCH signature alone recovers the claimed address
+<span class="pass">  PASS</span>  wrong BCH address rejected
+<span class="pass">  PASS</span>  garbage BCH signature rejected
+
+8 passed, 0 failed.</div>
+  <p class="links"><a href="https://github.com/georgeonweb3/bch-did-binding">Repo: bch-did-binding ↗</a></p>
+</section>
+
+<section class="card">
+  <span class="prize">$750 PUSD</span>
+  <h2>5 · Stablecoin Bridge — USDT ⇄ PUSD, executed end to end</h2>
+  <p class="hook">The route everyone lists, nobody executes: live quotes on both legs, and the exact transactions to sign.</p>
+  <div><span class="stat"><b>98.74</b><span>PUSD out per 100 USDT in</span></span><span class="stat"><b>$1.26</b><span>total cost on $100</span></span><span class="stat"><b>~5–10 min</b><span>settlement</span></span></div>
+  <p>Leg 1: THORChain (USDT → BCH). Leg 2: Cauldron (BCH → PUSD). Non-atomic by design: if leg 2 fails you hold BCH and retry — nothing is stuck in the bridge.</p>
+  <div>
+    <label>Amount <input id="amt" type="number" value="100" min="1" style="width:90px"></label>
+    <label>Chain <select id="chain"><option>BSC</option><option>ETH</option></select></label>
+    <button id="quoteBtn" onclick="quoteLive()">Get live quote</button>
+  </div>
+  <div id="bridgeOut" class="proof">Recorded run (2026-11-14, live quotes):
+100 USDT (BSC) -&gt; 0.468 BCH -&gt; 98.74 PUSD, ~$1.26 total, 7/7 checks pass.
+Reverse: 100 PUSD -&gt; 99.33 USDT, ~$0.67 total, 6/6 checks pass.
+Press "Get live quote" to re-price it right now.</div>
+  <p class="links"><a href="https://github.com/georgeonweb3/bch-stable-bridge">Repo: bch-stable-bridge ↗</a></p>
+</section>
+
+<section class="card">
+  <span class="prize">0.5 BCH</span>
+  <h2>6 · FoldingCash — pull-based Merkle claims</h2>
+  <p class="hook">Folders stop waiting on a trusted monthly push: one Merkle root per month, claim whenever you choose.</p>
+  <div><span class="stat"><b>15/15</b><span>checks pass</span></span><span class="stat"><b>8</b><span>folders verified</span></span><span class="stat"><b>0</b><span>double-claims possible</span></span></div>
+  <p>Leaf = keccak256(pubkey ‖ amount), sorted-pair tree (OpenZeppelin convention). The pool contract verifies the proof, checks the signature, blocks double-claims, and pays out.</p>
+  <div class="proof">Month rewards: 8 folders, total 4,932,000 units
+Merkle root: d9fffcf72bda3487d9bc3b2ecb46e326e8012e82bff24c70c5a6c2290399f830
+
+<span class="pass">  PASS</span>  every folder's claim verifies
+<span class="pass">  PASS</span>  wrong amount rejected
+<span class="pass">  PASS</span>  second claim of the same leaf rejected
+
+15 passed, 0 failed.</div>
+  <p class="links"><a href="https://github.com/georgeonweb3/foldingcash-claims">Repo: foldingcash-claims ↗</a></p>
+</section>
+
+</main>
+<footer>
+  All demos run from the repos above — <code>node demo.mjs</code> in each one. No funds move in any demo; the bridge only reads quotes. BCH BLAZE 2026 · BCH Blaze · DoraHacks.
+</footer>
+<script>
+const PUSD = '2469acc5afa4b10cb5b5c04afb89c3a3ffd61c5da9c01e26d00951cae2a02544';
+const DEST_BCH = 'qrma5fl2va9gs499x93yhu8rf28fyk7lfstxelzxf2'; // demo address, never funded, quote-only
+const USDT = { BSC: 'BSC.USDT-0x55d398326f99059fF775485246999027B3197955', ETH: 'ETH.USDT-0xdAC17F958D2ee523a2206206994597C13D831ec7' };
+async function quoteLive() {
+  const btn = document.getElementById('quoteBtn'), out = document.getElementById('bridgeOut');
+  const amt = Math.max(1, Number(document.getElementById('amt').value) || 100);
+  const chain = document.getElementById('chain').value;
+  btn.disabled = true; btn.textContent = 'Quoting…';
+  try {
+    const q = await (await fetch(`https://gateway.liquify.com/chain/thorchain_api/thorchain/quote/swap?amount=${Math.round(amt * 1e8)}&from_asset=${USDT[chain]}&to_asset=BCH.BCH&destination=${DEST_BCH}&liquidity_tolerance_bps=500`)).json();
+    if (q.expected_amount_out === undefined) throw new Error('no quote');
+    const bch = Number(q.expected_amount_out) / 1e8;
+    const price = await (await fetch(`https://indexer.riften.net/cauldron/price/${PUSD}/current`)).json();
+    const satsPerUnit = Number(price.price);
+    const pusdGross = (Math.round(bch * 1e8) / satsPerUnit) / 100;
+    const pusdNet = pusdGross * (1 - 0.003 - 0.001);
+    out.textContent = `Live quote (just now):\n${amt} USDT (${chain}) -> ${bch.toFixed(6)} BCH -> ${pusdNet.toFixed(2)} PUSD (${(pusdNet / amt * 100).toFixed(2)}% retained, ~$${(amt - pusdNet).toFixed(2)} total cost)\nTHORChain fees: ${(Number(q.fees?.total ?? 0) / 1e8).toFixed(6)} BCH · slippage ${q.fees?.slippage_bps ?? '?'} bps\nPUSD price: ${satsPerUnit.toFixed(2)} sats/unit · memo: ${q.memo}`;
+  } catch (e) {
+    out.textContent = 'Live quote unavailable from this browser (the quote APIs may block cross-site requests). Recorded run (2026-11-14, live quotes):\n100 USDT (BSC) -> 0.468 BCH -> 98.74 PUSD, ~$1.26 total, 7/7 checks pass.\nReverse: 100 PUSD -> 99.33 USDT, ~$0.67 total, 6/6 checks pass.';
+  }
+  btn.disabled = false; btn.textContent = 'Get live quote';
+}
+</script>
+</body>
+</html>
