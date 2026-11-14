@@ -46,12 +46,19 @@
 </header>
 <main>
 
-<section class="card wip">
+<section class="card">
   <span class="prize">3.5 BCH</span>
   <h2>1 · SolidCash — Aegis guard in Solidity, compiled to BCH</h2>
   <p class="hook">The flagship: the Aegis spend guard (daily limits, freeze, per-tx caps) as a Solidity contract that compiles natively to BCH.</p>
-  <p>Status: contract written, toolchain installing, compile next. The guard semantics are already proven in the XO template below and in the original Aegis contract on Base.</p>
-  <p class="links"><a href="https://github.com/georgeonweb3/aegis-base">Original Aegis (Base) ↗</a></p>
+  <div><span class="stat"><b>8,908</b><span>bytes — under the 10,000 limit</span></span><span class="stat"><b>4/4</b><span>mock tests pass</span></span><span class="stat"><b>6,579</b><span>bytes: FoldingPool</span></span></div>
+  <p>Full port started at 18,750 bytes (undeployable). The lean core — intents off-chain in the XO template, one <code>balance</code> field, <code>require()</code> not custom errors, no events, inlined auth — compiles clean at 8,908 bytes via both <code>solidc</code> and <code>solidhat</code>. Mock suite green: deploy, full flow (create → deposit → spend → freeze → spend blocked → unfreeze → spend → withdraw → over-withdraw blocked, books balance 10,000 − 2,000 − 1,000 − 3,000 = 4,000), owner limit change + stranger rejection, stranger-spend rejection. Honest limit, stated in the repo: <code>deposit</code> credits a declared amount (SolidCash 0.50.0 cannot measure <code>msg.value</code> for deposit-only functions); spends stay capped by the container's real balance, so no funds can be created. Chipnet deploy next; mainnet waits on the owner.</p>
+  <div class="proof"><span class="pass">  PASS</span>  deploys on the mock network
+<span class="pass">  PASS</span>  creates an agent, deposits, spends, freezes, withdraws — books balance
+<span class="pass">  PASS</span>  lets the owner change the daily limit, and rejects strangers
+<span class="pass">  PASS</span>  rejects an agent spend signed by a stranger
+
+4 passed, 0 failed.</div>
+  <p class="links"><a href="https://github.com/georgeonweb3/aegis-bch">Repo: aegis-bch ↗</a><a href="https://github.com/georgeonweb3/aegis-base">Original Aegis (Base) ↗</a></p>
 </section>
 
 <section class="card">
@@ -112,9 +119,9 @@ Press "Get live quote" to re-price it right now.</div>
   <h2>6 · FoldingCash — pull-based Merkle claims</h2>
   <p class="hook">Folders stop waiting on a trusted monthly push: one Merkle root per month, claim whenever you choose.</p>
   <div><span class="stat"><b>15/15</b><span>checks pass</span></span><span class="stat"><b>8</b><span>folders verified</span></span><span class="stat"><b>0</b><span>double-claims possible</span></span></div>
-  <p>Leaf = keccak256(pubkey ‖ amount), sorted-pair tree (OpenZeppelin convention). The pool contract verifies the proof, checks the signature, blocks double-claims, and pays out.</p>
+  <p>Leaf = keccak256(hash160(pubkey) ‖ amount), sorted-pair tree (OpenZeppelin convention). The pool contract (<code>FoldingPool.sol</code>, compiles at 6,579 bytes in the aegis-bch repo) recomputes the leaf with the <code>hash160()</code> builtin, verifies the proof, checks the signature, blocks double-claims, and pays out. Honest limit: the full on-chain <code>claim</code> is still unproven on the mock network (framework derive issue — see the repo README); the Merkle logic below is the verified part. Roots are per-run (fresh keys each demo).</p>
   <div class="proof">Month rewards: 8 folders, total 4,932,000 units
-Merkle root: d9fffcf72bda3487d9bc3b2ecb46e326e8012e82bff24c70c5a6c2290399f830
+Merkle root: 81dc57548ed8b97a0b3ae50fb1bb7c3d163aa267bdbacd75b099992cc1130aef
 
 <span class="pass">  PASS</span>  every folder's claim verifies
 <span class="pass">  PASS</span>  wrong amount rejected
